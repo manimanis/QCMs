@@ -1,7 +1,7 @@
 <?php
 function listClasses(PDO $pdo)
 {
-    $stmt = $pdo->query("SELECT distinct classe FROM eleves_classes;");
+    $stmt = $pdo->query("SELECT distinct classe FROM qcms;");
     $items = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $item) {
         $items[] = $item['classe'];

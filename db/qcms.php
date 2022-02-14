@@ -7,6 +7,14 @@ function listQcms(PDO $dbh, string $classe)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function listQcmsAndContent(PDO $dbh, string $classe)
+{
+    $stmt = $dbh->prepare("SELECT * 
+                           FROM qcms WHERE classe = :classe;");
+    $stmt->execute([':classe' => $classe]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function listDatesQcm(PDO $dbh, int $qcm_id)
 {
     $stmt = $dbh->prepare("SELECT distinct DATE(date_rep) as date_rep 
@@ -35,4 +43,34 @@ function insertQcm(PDO $dbh, string $classe, string $titre, string $description,
         return $dbh->lastInsertId();
     }
     return -1;
+}
+
+function updateQcm(PDO $dbh, int $id, string $classe, string $titre, string $description, int $nbr_questions, string $questions, string $reponses)
+{
+    $stmt = $dbh->prepare("UPDATE qcms 
+        SET classe = :classe, 
+            titre = :titre,
+            `description` = :description, 
+            nbr_questions = :nbr_questions, 
+            questions = :questions, 
+            reponses = :reponses
+        WHERE id = :id");
+    return $stmt->execute([
+        ':id' => $id,
+        ':classe' => $classe,
+        ':titre' => $titre,
+        ':description' => $description,
+        ':nbr_questions' => $nbr_questions,
+        ':questions' => $questions,
+        ':reponses' => $reponses
+    ]);
+}
+
+function deleteQcm(PDO $dbh, int $id)
+{
+    $stmt = $dbh->prepare("DELETE FROM qcms 
+        WHERE id = :id");
+    return $stmt->execute([
+        ':id' => $id
+    ]);
 }

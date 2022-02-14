@@ -20,10 +20,14 @@
         <td>{{qcm.id}}</td>
         <td>{{qcm.titre}}</td>
         <td>{{qcm.nbr_questions}}</td>
-        <td>&nbsp;</td>
+        <td>
+          <a href="#" title="Editer" v-on:click="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
+          <a href="#" title="Dupliquer" v-on:click="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
+          <a href="#" title="Supprimer" v-on:click="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
+        </td>
       </tr>
       <tr v-if="qcms.length == 0">
-        <td colspan="6">Aucun QCM pour cette classe</td>
+        <td colspan="4">Aucun QCM pour cette classe</td>
       </tr>
     </table>
     <div class="my-2">
@@ -31,7 +35,7 @@
     </div>
   </div>
 
-  <div class="my-2" v-if="mode == 'newQcm'">
+  <div class="my-2" v-if="mode == 'newQcm' || mode == 'editQcm'">
     {{selectedQcm}}
     <div class="my-2">
       <label for="classe">Classe</label>
@@ -92,9 +96,59 @@
     <div class="my-2">
       <button class="btn btn-secondary w-100" v-on:click="onIncrementQuestions()"><i class="fa-solid fa-circle-question"></i> Nouvelle Question</button>
     </div>
-    <div class="mt-4 mb-2">
+    <div class="mt-4 mb-2" v-if="mode == 'newQcm'">
       <button class="btn btn-success" v-on:click="onApplyAjouter()">Ajouter</button>
       <button class="btn btn-secondary" v-on:click="onCancelAjouter()">Annuler</button>
+    </div>
+    <div class="mt-4 mb-2" v-if="mode == 'editQcm'">
+      <button class="btn btn-success" v-on:click="onApplyEditer()">Editer</button>
+      <button class="btn btn-secondary" v-on:click="onCancelEditer()">Annuler</button>
+    </div>
+  </div>
+
+  <div class="my-2" v-if="mode == 'deleteQcm'">
+    <div class="my-2">
+      <label>Classe</label>
+      {{selectedQcm.classe}}
+    </div>
+    <div class="my-2">
+      <label>Titre</label>
+      {{selectedQcm.titre}}
+    </div>
+    <div class="my-2">
+      <label>Description</label>
+      {{selectedQcm.description}}
+    </div>
+    <div class="my-2 card" v-for="question, idx in selectedQcm.questions">
+      <div class="card-body">
+        <h4>Question {{idx+1}} / {{selectedQcm.questions.length}}</h4>
+        <div class="my-2">
+          <label>Enoncé</label>
+          <p>{{question.enonce}}</p>
+        </div>
+        <div class="my-2">
+          <label><input type="checkbox" v-model="question.is_single" disabled> {{question.is_single ? "Une seule réponse" : "Plusieurs réponses"}}</label>
+        </div>
+
+        <h5 class="card-title">Propositions</h5>
+        <div class="my-2 card">
+          <div class="card-body">
+            <div v-for="proposition, idx2 in question.propositions">
+              <div class="my-2">
+                <label>Proposition {{String.fromCharCode(65+idx2)}}</label> -
+                <label v-if="question.is_single"><input type="radio" v-bind:name="'prop'+idx" v-bind:value="String.fromCharCode(65+idx2)" v-model="question.single_answer" disabled> {{question.single_answer == String.fromCharCode(65+idx2) ? 'Correcte' : 'Incorrecte'}}</label>
+                <label v-if="!question.is_single"><input type="checkbox" v-bind:name="'prop'+idx+'_'+idx2" v-bind:value="String.fromCharCode(65+idx2)" v-model="question.answers" disabled> {{question.answers.includes(String.fromCharCode(65+idx2)) ? 'Correcte' : 'Incorrecte'}}</label>
+              </div>
+              <p>{{question.propositions[idx2]}}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 mb-2">
+      <p>Attention : vous allez supprimer définitivement ce QCMs. Il n'y a aucun moyen de le récupérer.</p>
+      <button class="btn btn-danger" v-on:click="onApplySupprimer()">Supprimer</button>
+      <button class="btn btn-secondary" v-on:click="onCancelSupprimer()">Annuler</button>
     </div>
   </div>
 </div>

@@ -21,7 +21,7 @@ if ($op == 'classes') {
   $classes = listClasses($dbh);
   echo json_encode(["isok" => true, "classes" => $classes]);
 } else if ($op == 'qcms') {
-  $qcms = listQcms($dbh, $_GET['classe']);
+  $qcms = listQcmsAndContent($dbh, $_GET['classe']);
   echo json_encode(["isok" => true, "qcms" => $qcms]);
 } else if ($op == 'insertQcm' && $method == 'POST') {
   $id = insertQcm(
@@ -34,4 +34,22 @@ if ($op == 'classes') {
     $_POST['reponses']
   );
   echo json_encode(["isok" => true, "id" => $id]);
+} else if ($op == 'updateQcm' && $method == 'POST') {
+  $isok = updateQcm(
+    $dbh,
+    intval($_POST['id']),
+    $_POST['classe'],
+    $_POST['titre'],
+    $_POST['description'],
+    intval($_POST['nbr_questions']),
+    $_POST['questions'],
+    $_POST['reponses']
+  );
+  echo json_encode(["isok" => $isok]);
+} else if ($op == 'deleteQcm' && $method == 'POST') {
+  $isok = deleteQcm(
+    $dbh,
+    intval($_POST['id'])
+  );
+  echo json_encode(["isok" => $isok]);
 }
