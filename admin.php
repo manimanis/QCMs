@@ -7,17 +7,6 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
   echo "Non autorisé!";
   exit();
 }
-
-$errors = [];
-try {
-  $dbh = new PDO("mysql:dbname={$base};host=$host", $user, $pass);
-} catch (PDOException $e) {
-  $errors[] = "Connexion impossible : " . $e->getMessage();
-}
-if (count($errors)) {
-  echo json_encode(["isok" => false, "errors" => $errors]);
-  exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

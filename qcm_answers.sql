@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 13 fév. 2022 à 19:45
+-- Généré le : lun. 14 fév. 2022 à 18:22
 -- Version du serveur :  10.4.18-MariaDB
 -- Version de PHP : 7.4.16
 
@@ -146,6 +146,7 @@ CREATE TABLE `qcms` (
   `titre` varchar(255) NOT NULL,
   `description` varchar(1024) NOT NULL,
   `nbr_questions` int(11) NOT NULL,
+  `questions` text NOT NULL,
   `reponses` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -153,8 +154,9 @@ CREATE TABLE `qcms` (
 -- Déchargement des données de la table `qcms`
 --
 
-INSERT INTO `qcms` (`id`, `classe`, `titre`, `description`, `nbr_questions`, `reponses`) VALUES
-(1, '2TI', 'Structures itératives', 'QCM Structures itératives', 10, '1A2A3C4C5B6C7D8B9D10C');
+INSERT INTO `qcms` (`id`, `classe`, `titre`, `description`, `nbr_questions`, `questions`, `reponses`) VALUES
+(1, '2TI', 'Structures itératives', 'QCM Structures itératives', 10, '', '1A2A3C4C5B6C7D8B9D10C'),
+(6, '2TI', 'Structures itératives', 'QCM Structures itératives', 10, '[{\"enonce\":\"      <p><strong>Qu\'affiche le programme suivant (le \\\"/\\\" indique un retour à la ligne)</strong></p>\\n      <pre><code class=\\\"python\\\">for k in range(3):\\n    print(k)</code></pre>\",\"is_single\":true,\"propositions\":[\"0 / 1 / 2\",\"0 / 3 / 6\",\"1 / 2 / 3\",\"0 / 1 / 2 / 3\"]},{\"enonce\":\"      <p><strong>Qu\'affiche le programme suivant (le \\\"/\\\" indique un retour à la ligne)</strong></p>\\n      <pre><code class=\\\"python\\\">for k in range(1, 7, 2):\\n    print(k)</code></pre>\",\"is_single\":true,\"propositions\":[\"1 / 3 / 5\",\"1 / 3 / 5 / 7\",\"1 / 2 / 3 / 4 / 5 / 6\",\"1 / 2 / 3 / 4 / 5 / 6 / 1 / 2 / 3 / 4 / 5 / 6\"]},{\"enonce\":\"      <p><strong>Qu\'affiche le programme suivant (le \\\"/\\\" indique un retour à la ligne)</strong></p>\\n      <pre><code class=\\\"python\\\">for k in range(1, -8, -2):\\n    print(k)</code></pre>\",\"is_single\":true,\"propositions\":[\"-1 / -3 / -5 / -7\",\"-1 / -3 / -5 / -7 / -8\",\"1 / -1 / -3 / -5 / -7\",\"1 / -1 / -3 / -5 / -7 / -9\"]},{\"enonce\":\"      <p><strong>Qu\'affiche le programme suivant (le \\\"/\\\" indique un retour à la ligne)</strong></p>\\n      <pre><code class=\\\"python\\\">ch = \\\"ab cd\\\"\\nfor k in range(len(ch)):\\n    print(k)</code></pre>\",\"is_single\":true,\"propositions\":[\"ab / cd\",\"ab cd\",\"a / b / / c / d\",\"a / b / c / d\"]},{\"enonce\":\"      <p><strong>Soit t un tableau qui contient les éléments : 1, 4, 3, 8, 2</strong></p>\\n      <p><strong>On exécute le programme suivant :</strong></p>\\n      <pre><code class=\\\"python\\\">s = 0\\nfor i in range(5):\\n    s += t[i]</code></pre>\\n      <p><strong>Quelle est la valeur de <code>s</code> à la fin de l\'exécution ?</strong></p>\",\"is_single\":true,\"propositions\":[\"1\",\"18\",\"8\",\"36\"]},{\"enonce\":\"      <p><strong>Soit t un tableau qui contient les éléments : 1, 2, 3, 4, 1, 2, 3, 4, 0, 2</strong></p>\\n      <p><strong>On exécute le programme suivant :</strong></p>\\n      <pre><code class=\\\"python\\\">c = 0\\nfor i in range(10):\\n    if t[i] == t[1]:\\n        c += 1</code></pre>\\n      <p><strong>Quelle est la valeur de <code>c</code> à la fin de l\'exécution ?</strong></p>\",\"is_single\":true,\"propositions\":[\"0\",\"2\",\"3\",\"10\"]},{\"enonce\":\"      <p><strong>Que contient la variable <code>a</code> sachant que :</strong></p>\\n      <pre><code class=\\\"python\\\">a = 1\\nwhile a &lt;= 14:\\n    a = a + 4</code></pre>\",\"is_single\":true,\"propositions\":[\"1\",\"14\",\"15\",\"17\"]},{\"enonce\":\"      <p><strong>Que contient la variable <code>a</code> sachant que :</strong></p>\\n      <pre><code class=\\\"python\\\">a = 5\\nwhile a > 13:\\n    a = a + 3</code></pre>\",\"is_single\":true,\"propositions\":[\"1\",\"5\",\"13\",\"15\"]},{\"enonce\":\"      <p><strong>Que contient la variable <code>s</code> sachant que :</strong></p>\\n      <pre><code class=\\\"python\\\">s = 0\\nn = 6\\nwhile n >= 0:\\n    s = s + n\\n    n = n - 1</code></pre>\",\"is_single\":true,\"propositions\":[\"0\",\"6\",\"15\",\"21\"]},{\"enonce\":\"<p><strong>Quelle est la valeur du couple <code>(s, i)</code> à la fin de l\'exécution du programme\\n          suivant :</strong></p>\\n      <pre><code class=\\\"python\\\">s = 0\\ni = 1\\nwhile i &lt; 5:\\n    s = s + i\\n    i = i + 1</code></pre>\",\"is_single\":true,\"propositions\":[\"(4, 5)\",\"(10, 4)\",\"(10, 5)\",\"(15, 5)\"]}]', '1A2B3C4C5B6C7D8B9D10C');
 
 --
 -- Index pour les tables déchargées
@@ -198,7 +200,7 @@ ALTER TABLE `eleves_classes`
 -- AUTO_INCREMENT pour la table `qcms`
 --
 ALTER TABLE `qcms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
