@@ -23,6 +23,21 @@ if ($op == 'classes') {
 } else if ($op == 'qcms') {
   $qcms = listQcmsAndContent($dbh, $_GET['classe']);
   echo json_encode(["isok" => true, "qcms" => $qcms]);
+} else if ($op == 'qcmsTitles') {
+  $qcms = listQcmsTitles($dbh, $_GET['classe']);
+  echo json_encode(["isok" => true, "qcmsTitles" => $qcms]);
+} else if ($op == 'qcmsAnswers') {
+  $dateDeb = (!isset($_GET['dateDeb'])) ? '2000-01-01' : $_GET['dateDeb'];
+  $dateFin = (!isset($_GET['dateFin'])) ? '9999-12-31' : $_GET['dateFin'];
+  $qcmId = intval($_GET['id']);
+  $answers = listAnswers($dbh, $qcmId, $dateDeb, $dateFin);
+  $qcm = getQcmById($dbh, $qcmId);
+  unset($qcm['questions']);
+  echo json_encode([
+    "isok" => true, 
+    "qcmsAnswers" => $answers,
+    "qcm" => $qcm
+  ]);
 } else if ($op == 'insertQcm' && $method == 'POST') {
   $id = insertQcm(
     $dbh,

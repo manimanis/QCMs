@@ -113,6 +113,11 @@ const app = new Vue({
       return fetch(`getqcmcontent.php?qcm_id=${qcm_id}`)
         .then(response => response.json())
         .then(data => {
+          if (!data['isok']) {
+            this.is_sent = true;
+            this.errors = data.errors;
+            this.error_message = "Erreur : Le QCM ne peut pas être chargé.";
+          }
           const qcm = data.data['qcm'];
           this.questions = JSON.parse(qcm.questions);
           this.nbr_questions = this.questions.length;

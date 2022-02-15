@@ -15,6 +15,22 @@ function listQcmsAndContent(PDO $dbh, string $classe)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function listQcmsTitles(PDO $dbh, string $classe)
+{
+    $stmt = $dbh->prepare("SELECT id, titre 
+                           FROM qcms WHERE classe = :classe;");
+    $stmt->execute([':classe' => $classe]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getQcmById(PDO $dbh, int $id)
+{
+    $stmt = $dbh->prepare("SELECT * 
+                           FROM qcms WHERE id = :id;");
+    $stmt->execute([':id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 function listDatesQcm(PDO $dbh, int $qcm_id)
 {
     $stmt = $dbh->prepare("SELECT distinct DATE(date_rep) as date_rep 

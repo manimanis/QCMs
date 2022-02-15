@@ -48,7 +48,7 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
     include_once 'db/answers.php';
 
     if ($_GET['op'] == "reponses") {
-      require_once 'require_reponses.php';
+      require_once './qcms/reponses.php';
     } else if ($_GET['op'] == "liste_eleves") {
       require_once './eleves/liste_eleves.php';
     } else if ($_GET['op'] == "ajout_classe") {
