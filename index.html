@@ -25,7 +25,6 @@
 
     <article>
       <div id="qcm">
-        <div id="qcm-content"></div>
         <div v-if="!loaded">
           <label for="qcm-id">Indiquer le numéro du QCM</label>
           <input type="number" min="0" max="999" v-model="id" v-on:keyup.enter="loadQcm()">
@@ -40,9 +39,13 @@
 
           <div class="mt-2 mb-4">
             <label for="nom_prenom">Nom & Prénom</label>
-            <input id="nom_prenom" type="text" class="form-control" list="liste-eleves" placeholder="Nom & Prénom" v-model="nom_prenom">
+            <input id="nom_prenom" type="text" class="form-control" list="liste-eleves" placeholder="Nom & Prénom"
+              v-model="nom_prenom">
             <div v-if="nom_prenom.length == 0" class="fst-italic text-danger"><small>Vous devez indiquer votre nom &
                 prénom pour pouvoir soumettre vos réponses.</small></div>
+            <datalist id="liste-eleves">
+              <option v-for="eleve in eleves" v-bind:value="eleve.nom_prenom"></option>
+            </datalist>
           </div>
 
           <div class="card">

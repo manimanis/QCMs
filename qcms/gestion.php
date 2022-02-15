@@ -1,7 +1,6 @@
 <div id="liste-qcm">
-  <h2>Liste des QCMs</h2>
 
-  <div class="my-2">
+  <div class="my-2" v-if="mode == 'liste'">
     <label for="classe">Classe</label>
     <select name="classe" id="classe" class="form-control" v-model="selectedClasse" v-on:change="onSelectedClasseChanged()">
       <option v-for="classe in classes">{{classe}}</option>
@@ -9,6 +8,7 @@
   </div>
 
   <div class="my-2" v-if="selectedClasse != '' && mode == 'liste'">
+    <h2>Liste des QCMs</h2>
     <table class="table table-sm table-bordered table-striped border-dark align-middle">
       <tr>
         <th width="60">id</th>
@@ -24,6 +24,7 @@
           <a href="#" title="Editer" v-on:click="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
           <a href="#" title="Dupliquer" v-on:click="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
           <a href="#" title="Supprimer" v-on:click="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
+          <a href="#" title="Format Brut" v-on:click="onRawFormatClicked(idx)"><i class="fa-solid fa-hashtag"></i></a>
         </td>
       </tr>
       <tr v-if="qcms.length == 0">
@@ -37,6 +38,8 @@
 
   <div class="my-2" v-if="mode == 'newQcm' || mode == 'editQcm'">
     {{selectedQcm}}
+    <h2 v-if="mode == 'newQcm'">Nouveau QCM</h2>
+    <h2 v-if="mode == 'editQcm'">Edition d'un QCM</h2>
     <div class="my-2">
       <label for="classe">Classe</label>
       <input type="text" id="classe" class="form-control" v-model="selectedQcm.classe">
@@ -107,17 +110,18 @@
   </div>
 
   <div class="my-2" v-if="mode == 'deleteQcm'">
+    <h2>Suppression d'un QCM</h2>
     <div class="my-2">
       <label>Classe</label>
-      {{selectedQcm.classe}}
+      <p>{{selectedQcm.classe}}</p>
     </div>
     <div class="my-2">
       <label>Titre</label>
-      {{selectedQcm.titre}}
+      <p>{{selectedQcm.titre}}</p>
     </div>
     <div class="my-2">
       <label>Description</label>
-      {{selectedQcm.description}}
+      <p>{{selectedQcm.description}}</p>
     </div>
     <div class="my-2 card" v-for="question, idx in selectedQcm.questions">
       <div class="card-body">
@@ -149,6 +153,32 @@
       <p>Attention : vous allez supprimer définitivement ce QCMs. Il n'y a aucun moyen de le récupérer.</p>
       <button class="btn btn-danger" v-on:click="onApplySupprimer()">Supprimer</button>
       <button class="btn btn-secondary" v-on:click="onCancelSupprimer()">Annuler</button>
+    </div>
+  </div>
+
+  <div class="my-2" v-if="mode == 'rawFormat'">
+    <div class="my-2">
+      <label><b>Classe</b></label>
+      <p>{{selectedQcm.classe}}</p>
+    </div>
+    <div class="my-2">
+      <label><b>Titre</b></label>
+      <p>{{selectedQcm.titre}}</p>
+    </div>
+    <div class="my-2">
+      <label><b>Description</b></label>
+      <p>{{selectedQcm.description}}</p>
+    </div>
+    <div class="my-2">
+      <label for="questions"><b>Questions</b></label>
+      <textarea id="questions" cols="30" rows="10" class="form-control" v-model="selectedQcm.questions"></textarea>
+    </div>
+    <div class="my-2">
+      <label for="reponses"><b>Réponses</b></label>
+      <input type="text" class="form-control" v-model="selectedQcm.reponses">
+    </div>
+    <div class="mt-4 mb-2">
+      <button class="btn btn-secondary" v-on:click="onCancelRawFormat()">Annuler</button>
     </div>
   </div>
 </div>

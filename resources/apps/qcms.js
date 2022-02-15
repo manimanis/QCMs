@@ -28,29 +28,7 @@ const app = new Vue({
           if (data['isok']) {
             this.qcms = data['qcms'];
             console.log(this.qcms);
-            this.qcms.forEach(qcm => {
-              qcm.questions = JSON.parse(qcm.questions);
-              qcm.reponses = this.splitAnswers(qcm.reponses);
-              qcm.reponses.forEach((rep, idx) => {
-                let i = 0, numQ = '';
-                while (i < rep.length && rep[i] >= '0' && rep[i] <= '9') {
-                  numQ += rep[i];
-                  i++;
-                }
-                numQ = +numQ - 1;
-                if (numQ < 0 || numQ >= qcm.questions.length) {
-                  return;
-                }
-                if (qcm.questions[numQ].is_single) {
-                  qcm.questions[numQ]['single_answer'] = rep[i];
-                } else {
-                  if (!qcm.questions[numQ]['answers']) {
-                    qcm.questions[numQ]['answers'] = [];
-                  }
-                  qcm.questions[numQ]['answers'].push(rep[i]);
-                }
-              });
-            });
+            this.qcms.forEach(qcm => this.prepareQcm(qcm));
           }
         });
     },
@@ -88,7 +66,7 @@ const app = new Vue({
       data.append("titre", qcmDocument.titre);
       data.append("description", qcmDocument.description);
       data.append("nbr_questions", qcmDocument.nbr_questions);
-      data.append("questions", JSON.stringify(qcmDocument.questions));
+      data.append("questions", qcmDocument.questions);
       data.append("reponses", qcmDocument.reponses);
       data.append("op", op);
       return fetch(`adminindex.php`, {
@@ -123,6 +101,33 @@ const app = new Vue({
         });
     },
     /**
+     * Prepare QCM object to be ready for viewing in the Form
+     * @param {Object} qcm 
+     */
+    prepareQcm: function (qcm) {
+      qcm.questions = JSON.parse(qcm.questions);
+      qcm.reponses = this.splitAnswers(qcm.reponses);
+      qcm.reponses.forEach((rep, idx) => {
+        let i = 0, numQ = '';
+        while (i < rep.length && rep[i] >= '0' && rep[i] <= '9') {
+          numQ += rep[i];
+          i++;
+        }
+        numQ = +numQ - 1;
+        if (numQ < 0 || numQ >= qcm.questions.length) {
+          return;
+        }
+        if (qcm.questions[numQ].is_single) {
+          qcm.questions[numQ]['single_answer'] = rep[i];
+        } else {
+          if (!qcm.questions[numQ]['answers']) {
+            qcm.questions[numQ]['answers'] = [];
+          }
+          qcm.questions[numQ]['answers'].push(rep[i]);
+        }
+      });
+    },
+    /**
      * Creates an object ready to POST from the object created in the form
      * @param {Object} rawObject 
      * @returns 
@@ -134,13 +139,13 @@ const app = new Vue({
         "titre": rawObject.titre,
         "description": rawObject.description,
         "nbr_questions": rawObject.questions.length,
-        "questions": rawObject.questions.map(question => {
+        "questions": JSON.stringify(rawObject.questions.map(question => {
           return {
             "enonce": question.enonce,
             "is_single": question.is_single,
             "propositions": [...question.propositions]
           };
-        }),
+        })),
         "reponses": rawObject.questions
           .reduce((pv, question, idx) => pv + ((question.is_single) ? ((idx + 1) + question.single_answer) : (question.answers.reduce((pv, cv) => pv + (idx + 1) + cv, ""))), "")
       };
@@ -216,7 +221,8 @@ const app = new Vue({
       const newDoc = this.createQcmDocument(this.selectedQcm);
       this.postQcm(newDoc, "insertQcm")
         .then(qcmDocument => {
-          this.qcms.push(qcmDocument);
+          this.selectedQcm.id = qcmDocument.id;
+          this.qcms.push(this.selectedQcm);
           this.onCancelAjouter();
         });
     },
@@ -229,10 +235,19 @@ const app = new Vue({
       this.mode = 'liste';
     },
     onApplyEditer: function () {
+      const oldDoc = this.qcms[this.selectedQcmIndex];
       const newDoc = this.createQcmDocument(this.selectedQcm);
       this.postQcm(newDoc, "updateQcm")
         .then(qcmDocument => {
-          this.qcms[this.selectedQcmIndex] = qcmDocument;
+          if (oldDoc.classe != this.selectedQcm.classe) {
+            if (!this.classes.includes(this.selectedQcm.classe)) {
+              this.classes.push(this.selectedQcm.classe);
+            }
+            this.selectedClasse = this.selectedQcm.classe;
+            this.fetchQcmbyClasse(this.selectedClasse);
+          } else {
+            this.qcms[this.selectedQcmIndex] = this.selectedQcm;
+          }
           this.onCancelEditer();
         })
     },
@@ -263,8 +278,18 @@ const app = new Vue({
       const newDoc = this.createQcmDocument(this.selectedQcm);
       this.postQcm(newDoc, "insertQcm")
         .then(qcmDocument => {
-          this.qcms.push(qcmDocument);
+          this.selectedQcm.id = qcmDocument.id;
+          this.qcms.push(this.selectedQcm);
         });
+    },
+    onRawFormatClicked: function(idx) {
+      this.mode = "rawFormat";
+      this.selectedQcm = this.createNewQcm(this.qcms[idx]);
+      const newDoc = this.createQcmDocument(this.selectedQcm);
+      this.selectedQcm = newDoc;
+    },
+    onCancelRawFormat: function() {
+      this.mode = "liste";
     },
     onIncrementQuestions: function () {
       const newCount = this.selectedQcm.nbr_questions + 1;
