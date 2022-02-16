@@ -34,7 +34,7 @@ if ($op == 'classes') {
   $qcm = getQcmById($dbh, $qcmId);
   unset($qcm['questions']);
   echo json_encode([
-    "isok" => true, 
+    "isok" => true,
     "qcmsAnswers" => $answers,
     "qcm" => $qcm
   ]);
@@ -67,4 +67,32 @@ if ($op == 'classes') {
     intval($_POST['id'])
   );
   echo json_encode(["isok" => $isok]);
+} else if ($op == 'eleves') {
+  $eleves = listEleves($dbh, $_GET['classe']);
+  echo json_encode(["isok" => true, "eleves" => $eleves]);
+} else if ($op == 'insertEleve' && $method == 'POST') {
+  $classe = trim($_POST['classe']);
+  $eleve = trim($_POST['nom_prenom']);
+  $id = insertEleve($dbh, $eleve, $classe);
+  echo json_encode(["isok" => ($id != -1), "id" => $id]);
+} else if ($op == 'updateEleve' && $method == 'POST') {
+  $id = intval($_POST['id']);
+  $classe = trim($_POST['classe']);
+  $eleve = trim($_POST['nom_prenom']);
+  $isok = updateEleve($dbh, $id, $eleve, $classe);
+  echo json_encode(["isok" => $isok]);
+} else if ($op == 'deleteEleve' && $method == 'POST') {
+  $isok = deleteEleve(
+    $dbh,
+    intval($_POST['id'])
+  );
+  echo json_encode(["isok" => $isok]);
+} else if ($op == 'insertClasse' && $method == 'POST') {
+  $classe = trim($_POST['classe']);
+  $eleves = explode("\n", trim($_POST['eleves']));
+  foreach ($eleves as $idx => $eleve) {
+    $eleves[$idx] = trim($eleve);
+  }
+  $ids = insertEleves($dbh, $eleves, $classe);
+  echo json_encode(["isok" => (count($ids) == count($eleves)), "ids" => $ids]);
 }

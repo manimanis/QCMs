@@ -33,7 +33,10 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
           <a class="nav-link" href="?op=reponses"><i class="fa-solid fa-comment-dots"></i> Réponses</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="?op=liste_eleves"><i class="fa-solid fa-graduation-cap"></i> Elèves</a>
+          <a class="nav-link" href="?op=liste_eleves"><i class="fa-solid fa-graduation-cap"></i> old Elèves</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="?op=eleves"><i class="fa-solid fa-graduation-cap"></i> Elèves</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="?op=gestion_qcms"><i class="fa-solid fa-list-check"></i> QCMs</a>
@@ -49,6 +52,8 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
 
     if ($_GET['op'] == "reponses") {
       require_once './qcms/reponses.php';
+    } else if ($_GET['op'] == "eleves") {
+      require_once './eleves/eleves.php';
     } else if ($_GET['op'] == "liste_eleves") {
       require_once './eleves/liste_eleves.php';
     } else if ($_GET['op'] == "ajout_classe") {

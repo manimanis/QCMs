@@ -27,20 +27,25 @@ function insertEleves(PDO $pdo, array $eleves, string $classe)
 {
     $stmt = $pdo->prepare("INSERT INTO eleves_classes (nom_prenom, classe) 
                            VALUES (:nom_prenom, :classe);");
-    $count = 0;
+    $eleves_ids = [];
     foreach ($eleves as $eleve) {
         if ($stmt->execute([':classe' => $classe, ':nom_prenom' => $eleve])) {
-            $count++;
+            $eleves_ids[] = $pdo->lastInsertId();
+        } else {
+            $eleves_ids[] = -1;
         }
     }
-    return $count == count($eleves);
+    return $eleves_ids;
 }
 
 function insertEleve(PDO $pdo, string $eleve, string $classe)
 {
     $stmt = $pdo->prepare("INSERT INTO eleves_classes (nom_prenom, classe) 
                            VALUES (:nom_prenom, :classe);");
-    return $stmt->execute([':classe' => $classe, ':nom_prenom' => $eleve]);
+    if ($stmt->execute([':classe' => $classe, ':nom_prenom' => $eleve])) {
+        return $pdo->lastInsertId();
+    }
+    return -1;
 }
 
 function updateEleve(PDO $pdo, int $id, string $eleve, string $classe)
