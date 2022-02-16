@@ -20,10 +20,12 @@
       <tbody>
         <tr>
           <th width="60"></th>
+          <th width="60">Id</th>
           <th>Nom &amp; Prénom</th>
           <th width="100">&nbsp;</th>
         </tr>
         <tr v-for="eleve, idxEleve in eleves">
+          <td><small>#{{idxEleve+1}}</small></td>
           <td>{{eleve.id}}</td>
           <td>{{eleve.nom_prenom}}</td>
           <td>
