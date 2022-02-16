@@ -1,5 +1,7 @@
 <div id="liste-qcm">
 
+  <a id="downloadAnchorElem" style="display:none"></a>
+
   <div class="my-2" v-if="mode == 'liste'">
     <label for="classe">Classe</label>
     <select name="classe" id="classe" class="form-control" v-model="selectedClasse" v-on:change="onSelectedClasseChanged()">
@@ -24,7 +26,7 @@
           <a href="#" title="Editer" v-on:click="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
           <a href="#" title="Dupliquer" v-on:click="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
           <a href="#" title="Supprimer" v-on:click="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
-          <a href="#" title="Format Brut" v-on:click="onRawFormatClicked(idx)"><i class="fa-solid fa-hashtag"></i></a>
+          <a href="#" title="Exporter" v-on:click="onRawFormatClicked(idx)"><i class="fa-solid fa-file-export"></i></a>
         </td>
       </tr>
       <tr v-if="qcms.length == 0">
@@ -32,12 +34,13 @@
       </tr>
     </table>
     <div class="my-2">
-      <button class="btn btn-primary" v-on:click="onAjouterClicked()">Ajouter</button>
+      <button class="btn btn-primary" v-on:click="onAjouterClicked()"><i class="fa-solid fa-circle-plus"></i> Ajouter</button>
+      <button class="btn btn-primary" v-on:click="onImporterClicked()"><i class="fa-solid fa-file-import"></i> Importer</button>
+      <button class="btn btn-primary" v-on:click="onExporterToutClicked()"><i class="fa-solid fa-file-export"></i> Exporter Tout</button>
     </div>
   </div>
 
   <div class="my-2" v-if="mode == 'newQcm' || mode == 'editQcm'">
-    {{selectedQcm}}
     <h2 v-if="mode == 'newQcm'">Nouveau QCM</h2>
     <h2 v-if="mode == 'editQcm'">Edition d'un QCM</h2>
     <div class="my-2">
@@ -100,12 +103,12 @@
       <button class="btn btn-secondary w-100" v-on:click="onIncrementQuestions()"><i class="fa-solid fa-circle-question"></i> Nouvelle Question</button>
     </div>
     <div class="mt-4 mb-2" v-if="mode == 'newQcm'">
-      <button class="btn btn-success" v-on:click="onApplyAjouter()">Ajouter</button>
-      <button class="btn btn-secondary" v-on:click="onCancelAjouter()">Annuler</button>
+      <button class="btn btn-success" v-on:click="onApplyAjouter()"><i class="fa-solid fa-circle-plus"></i> Ajouter</button>
+      <button class="btn btn-secondary" v-on:click="onCancelAjouter()"><i class="fa-solid fa-person-running"></i> Annuler</button>
     </div>
     <div class="mt-4 mb-2" v-if="mode == 'editQcm'">
-      <button class="btn btn-success" v-on:click="onApplyEditer()">Editer</button>
-      <button class="btn btn-secondary" v-on:click="onCancelEditer()">Annuler</button>
+      <button class="btn btn-success" v-on:click="onApplyEditer()"><i class="fa-solid fa-pen-to-square"></i> Editer</button>
+      <button class="btn btn-secondary" v-on:click="onCancelEditer()"><i class="fa-solid fa-person-running"></i> Annuler</button>
     </div>
   </div>
 
@@ -151,8 +154,8 @@
     </div>
     <div class="mt-4 mb-2">
       <p>Attention : vous allez supprimer définitivement ce QCMs. Il n'y a aucun moyen de le récupérer.</p>
-      <button class="btn btn-danger" v-on:click="onApplySupprimer()">Supprimer</button>
-      <button class="btn btn-secondary" v-on:click="onCancelSupprimer()">Annuler</button>
+      <button class="btn btn-danger" v-on:click="onApplySupprimer()"><i class="fa-solid fa-trash-can"></i> Supprimer</button>
+      <button class="btn btn-secondary" v-on:click="onCancelSupprimer()"><i class="fa-solid fa-person-running"></i> Annuler</button>
     </div>
   </div>
 
@@ -171,14 +174,27 @@
     </div>
     <div class="my-2">
       <label for="questions"><b>Questions</b></label>
-      <textarea id="questions" cols="30" rows="10" class="form-control" v-model="selectedQcm.questions"></textarea>
+      <textarea id="questions" cols="30" rows="4" class="form-control" v-model="selectedQcm.questions"></textarea>
     </div>
     <div class="my-2">
       <label for="reponses"><b>Réponses</b></label>
       <input type="text" class="form-control" v-model="selectedQcm.reponses">
     </div>
     <div class="mt-4 mb-2">
-      <button class="btn btn-secondary" v-on:click="onCancelRawFormat()">Annuler</button>
+      <button class="btn btn-primary" v-on:click="onExportRawFormat()"><i class="fa-solid fa-file-export"></i> Exporter</button>
+      <button class="btn btn-secondary" v-on:click="onCancelRawFormat()"><i class="fa-solid fa-person-running"></i> Annuler</button>
+    </div>
+  </div>
+
+  <div class="my-2" v-if="mode == 'import'">
+    <h2>Importer un QCM</h2>
+    <div class="my-2">
+      <label for="questions"><b>Copier/Coller le texte à importer</b></label>
+      <textarea id="questions" cols="30" rows="4" class="form-control" v-model="importCan"></textarea>
+    </div>
+    <div class="mt-4 mb-2">
+      <button class="btn btn-primary" v-on:click="onContinueImport()"><i class="fa-solid fa-file-import"></i> Importer</button>
+      <button class="btn btn-secondary" v-on:click="onCancelImport()"><i class="fa-solid fa-person-running"></i> Annuler</button>
     </div>
   </div>
 </div>

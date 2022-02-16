@@ -6,7 +6,8 @@ const app = new Vue({
     qcms: [],
     mode: 'liste',
     selectedQcm: {},
-    selectedQcmIndex: -1
+    selectedQcmIndex: -1,
+    importCan: ""
   },
   mounted: function () {
     this.fetchClasses();
@@ -282,14 +283,88 @@ const app = new Vue({
           this.qcms.push(this.selectedQcm);
         });
     },
-    onRawFormatClicked: function(idx) {
+    onRawFormatClicked: function (idx) {
       this.mode = "rawFormat";
       this.selectedQcm = this.createNewQcm(this.qcms[idx]);
+      this.selectedQcm.id = -1;
       const newDoc = this.createQcmDocument(this.selectedQcm);
       this.selectedQcm = newDoc;
     },
-    onCancelRawFormat: function() {
+    onCancelRawFormat: function () {
       this.mode = "liste";
+    },
+    onExportRawFormat: function () {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.selectedQcm));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      const date = new Date().toISOString()
+        .replaceAll(':', '-')
+        .replaceAll(' ', '_')
+        .substring(0, 19);
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `one-${this.selectedClasse}-qcm-${date}.json`);
+      dlAnchorElem.click();
+    },
+    onImporterClicked: function () {
+      this.mode = 'import';
+    },
+    onContinueImport: function () {
+      try {
+        const qcm = JSON.parse(this.importCan);
+        if (!Array.isArray(qcm)) {
+          this.verifyAndSanitizeQcm(qcm);
+          this.prepareQcm(qcm);
+          this.selectedQcm = qcm;
+          this.mode = "newQcm";
+          this.selectedQcmIndex = -1;
+        } else {
+          qcm.forEach(qcmItem => {
+            this.verifyAndSanitizeQcm(qcmItem);
+          });
+          const promiseArr = [];
+          qcm.forEach((qcmItem, idx) => {
+            qcmItem.id = -1;
+            const newDoc = this.createQcmDocument(qcmItem);
+            promiseArr.push(
+              this.postQcm(newDoc, "insertQcm")
+                .then(qcmDocument => {
+                  qcmItem.id = qcmDocument.id;
+                  this.qcms.push(qcmItem);
+                })
+            );
+          }); 
+          Promise.all(promiseArr).then(() => this.onCancelAjouter());
+        }
+      }
+      catch (e) {
+        alert("Ne peut pas importer le QCM :\n" + e.toString());
+      }
+    },
+    onCancelImport: function () {
+      this.mode = 'liste';
+    },
+    onExporterToutClicked: function () {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.qcms));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      const date = new Date().toISOString()
+        .replaceAll(':', '-')
+        .replaceAll(' ', '_')
+        .substring(0, 19);
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `all-${this.selectedClasse}-qcm-${date}.json`);
+      dlAnchorElem.click();
+    },
+    verifyAndSanitizeQcm: function (qcm) {
+      const fields = ["id", "classe", "titre", "description", "questions", "reponses", "nbr_questions"];
+      fields.forEach(field => {
+        if (qcm[field] == null) {
+          throw new Error(`${field} est introuvable, structure incorrecte.`);
+        }
+      });
+      Object.keys(qcm).forEach(key => {
+        if (!fields.includes(key)) {
+          delete qcm[key];
+        }
+      });
     },
     onIncrementQuestions: function () {
       const newCount = this.selectedQcm.nbr_questions + 1;
