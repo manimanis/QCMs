@@ -19,6 +19,12 @@ const app = new Vue({
           this.fetchEleves(this.classes[this.myCurClasse]);
         }
       }
+    },
+    currentSelectedClass: function () {
+      if (this.myCurClasse >= 0 && this.myCurClasse < this.classes.length) {
+        return this.classes[this.myCurClasse];
+      }
+      return "";
     }
   },
   mounted: function() {
@@ -109,7 +115,7 @@ const app = new Vue({
     createNewEleve: function(eleve) {
       return {
         id: +eleve.id || -1,
-        classe: eleve.classe || this.classes[this.myCurClasse],
+        classe: eleve.classe || "",
         nom_prenom: eleve.nom_prenom || ""
       };
     },
@@ -129,7 +135,9 @@ const app = new Vue({
       this.mode = 'liste';
     },
     onNewEleve: function() {
-      this.selectedEleve = this.createNewEleve({});
+      this.selectedEleve = this.createNewEleve({
+        classe: this.currentSelectedClass
+      });
       this.mode = "newEleve";
     },
     onApplyInsert: function() {
@@ -155,7 +163,7 @@ const app = new Vue({
         });
     },
     onNewClasse: function() {
-      this.selectedClasse = (this.myCurClasse >= 0 && this.myCurClasse < this.classes.length) ? this.classes[this.myCurClasse] : "";
+      this.selectedClasse = this.currentSelectedClass;
       this.selectedEleves = "";
       this.mode = 'newClasse';
     },

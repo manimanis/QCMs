@@ -15,7 +15,8 @@ const app = new Vue({
     errors: [],
     error_message: "",
     is_sent: false,
-    loaded: false
+    loaded: false,
+    rendered: false
   },
   computed: {
     nbr_questions_vides: function () {
@@ -26,6 +27,15 @@ const app = new Vue({
         }
       }
       return this._nbr_questions_vides;
+    }
+  },
+  updated: function () {
+    if (this.rendered) {
+      const el = document.querySelector('#qcm .enonce pre > code.python');
+      if (el) {
+        hljs.highlightBlock(el);
+      }
+      this.rendered = false;
     }
   },
   mounted: function () {
@@ -50,6 +60,7 @@ const app = new Vue({
     },
     gotoQuestion: function (num_question) {
       this.num_question = num_question;
+      this.rendered = true;
     },
     resetForm: function () {
       this.rep_array = this.questions
@@ -139,6 +150,7 @@ const app = new Vue({
           this.error_message = "";
           this.is_sent = false;
           this.loaded = true;
+          this.rendered = true;
         });
     }
   }

@@ -11,6 +11,7 @@
     </div>
     <div class="my-2">
       <button class="btn btn-primary" v-on:click="onNewClasse()"><i class="fa-solid fa-school"></i> Nouvelle Classe</button>
+      <button class="btn btn-primary" v-on:click="onNewEleve()"><i class="fa-solid fa-school"></i> Nouveau Eleve</button>
     </div>
   </div>
 

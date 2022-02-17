@@ -33,9 +33,6 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
           <a class="nav-link" href="?op=reponses"><i class="fa-solid fa-comment-dots"></i> Réponses</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="?op=liste_eleves"><i class="fa-solid fa-graduation-cap"></i> old Elèves</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="?op=eleves"><i class="fa-solid fa-graduation-cap"></i> Elèves</a>
         </li>
         <li class="nav-item">
@@ -50,27 +47,13 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
     include_once 'db/qcms.php';
     include_once 'db/answers.php';
 
-    if ($_GET['op'] == "reponses") {
+    $op = isset($_GET['op']) ? $_GET['op'] : "";
+
+    if ($op == "reponses") {
       require_once './qcms/reponses.php';
-    } else if ($_GET['op'] == "eleves") {
+    } else if ($op == "eleves") {
       require_once './eleves/eleves.php';
-    } else if ($_GET['op'] == "liste_eleves") {
-      require_once './eleves/liste_eleves.php';
-    } else if ($_GET['op'] == "ajout_classe") {
-      require_once './eleves/ajout_classe.php';
-    } else if ($_GET['op'] == "ajout_eleve") {
-      require_once './eleves/ajout_eleve.php';
-    } else if ($_GET['op'] == "insert_classe") {
-      require_once './eleves/insert_classe.php';
-    } else if ($_GET['op'] == "insert_eleve") {
-      require_once './eleves/insert_eleve.php';
-    } else if ($_GET['op'] == "supp_eleve") {
-      require_once './eleves/supp_eleve.php';
-    } else if ($_GET['op'] == "edit_eleve") {
-      require_once './eleves/edit_eleve.php';
-    } else if ($_GET['op'] == "update_eleve") {
-      require_once './eleves/update_eleve.php';
-    } else if ($_GET['op'] == "gestion_qcms") {
+    } else if ($op == "gestion_qcms") {
       require_once './qcms/gestion.php';
     }
     ?>
