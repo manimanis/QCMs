@@ -23,10 +23,10 @@
         <td>{{qcm.titre}}</td>
         <td>{{qcm.nbr_questions}}</td>
         <td>
-          <a href="#" title="Editer" v-on:click="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
-          <a href="#" title="Dupliquer" v-on:click="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
-          <a href="#" title="Supprimer" v-on:click="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
-          <a href="#" title="Exporter" v-on:click="onRawFormatClicked(idx)"><i class="fa-solid fa-file-export"></i></a>
+          <a href="#" title="Editer" v-on:click.prevent="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
+          <a href="#" title="Dupliquer" v-on:click.prevent="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
+          <a href="#" title="Supprimer" v-on:click.prevent="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
+          <a href="#" title="Exporter" v-on:click.prevent="onRawFormatClicked(idx)"><i class="fa-solid fa-file-export"></i></a>
         </td>
       </tr>
       <tr v-if="qcms.length == 0">
@@ -93,7 +93,7 @@
               <textarea v-bind:id="'prop-'+idx+'-'+idx2" class="form-control" cols="30" rows="1" v-model="question.propositions[idx2]"></textarea>
             </div>
             <div v-if="question.propositions.length < 10" class="my-2">
-              <a href="#" v-on:click="onInsertProposition(idx)"><i class="fa-solid fa-square-plus"></i> Ajouter une proposition</a>
+              <a href="#" v-on:click.prevent="onInsertProposition(idx)"><i class="fa-solid fa-square-plus"></i> Ajouter une proposition</a>
             </div>
           </div>
         </div>
