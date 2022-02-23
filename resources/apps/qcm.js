@@ -94,8 +94,14 @@ const app = new Vue({
           data.append(`q${idx + 1}`, rep);
         }
       });
+      const qcm = {
+        qcm_id: this.id,
+        nom_prenom: this.nom_prenom,
+        questions_count: this.rep_array.length,
+        rep_array: this.rep_array
+      };
       this.errors = [];
-      fetch("saveanswer.php", {
+      fetch("saveanswerr.php", {
         method: 'post',
         body: data,
       })
@@ -108,13 +114,33 @@ const app = new Vue({
           } else {
             this.error_message = "Votre réponse n'a pas été envoyée.";
             this.errors = data['errors'];
+            this.exportQcm(qcm);
           }
         })
         .catch(err => {
           this.is_sent = true;
           this.errors = [err];
           this.error_message = "Erreur : votre réponse n'a pas été envoyée.";
+          this.exportQcm(qcm);
         });
+    },
+    exportQcm: function (qcm) {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(qcm));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      const date = new Date().toISOString()
+        .replaceAll(':', '-')
+        .replaceAll(' ', '_')
+        .substring(0, 19);
+      let nom_prenom = qcm.nom_prenom.split('')
+        .filter(car => (car >= 'a' && car <= 'z') ||
+          (car >= 'A' && car <= 'Z') || (car >= '0' && car <= '9') ||
+          (car == ' '))
+        .map(car => (car == ' ') ? '_' : car)
+        .join('');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `qcm-${qcm.qcm_id}-${nom_prenom}-${date}.json`);
+      dlAnchorElem.click();
+      alert("Votre réponse a été prise en compte. Merci!");
     },
     loadQcm: function () {
       this.loadQcmContent(this.id);
