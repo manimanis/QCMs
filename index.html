@@ -31,9 +31,7 @@
         <div v-if="loaded">
           <h2>QCM n°{{id}} - {{titre}} [{{classe}}]</h2>
 
-          <div class="mt-2 mb-4">
-            <strong>{{description}}</strong>
-          </div>
+          <div class="mt-2 mb-4" v-html="description"></div>
 
           <div class="mt-2 mb-4">
             <label for="nom_prenom">Nom & Prénom</label>
@@ -55,7 +53,7 @@
                   <div class="proposition" v-for="proposition, idxprop in question.propositions">
                     <label class="d-flex">
                       <div><input v-bind:type="(question.is_single) ? 'radio' : 'checkbox'"
-                          v-bind:value="(idx+1) + String.fromCharCode(idxprop + 65)" v-model="rep_array[idx]"></div>
+                          v-bind:value="(question.num+1) + String.fromCharCode(idxprop + 65)" v-model="rep_array[idx]"></div>
                       <div class="mx-2" v-html="proposition"></div>
                     </label>
                   </div>

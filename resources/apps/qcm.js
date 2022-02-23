@@ -88,10 +88,11 @@ const app = new Vue({
       data.append("nom_prenom", this.nom_prenom);
       data.append("questions_count", this.rep_array.length);
       this.rep_array.forEach((rep, idx) => {
+        const question = this.questions[idx];
         if (Array.isArray(rep)) {
-          data.append(`q${idx + 1}`, rep.join(""));
+          data.append(`q${question.num + 1}`, rep.join(""));
         } else {
-          data.append(`q${idx + 1}`, rep);
+          data.append(`q${question.num + 1}`, rep);
         }
       });
       const qcm = {
@@ -156,7 +157,14 @@ const app = new Vue({
             this.error_message = "Erreur : Le QCM ne peut pas être chargé.";
           }
           const qcm = data.data['qcm'];
-          this.questions = JSON.parse(qcm.questions);
+          this.questions = JSON.parse(qcm.questions).map((q, idx) => {
+            const question = this.createQuestion(q);
+            question.num = idx;
+            return question;
+          });
+          //console.log(this.questions);
+          this.shuffleQuestions();
+          //console.log(this.questions);
           this.nbr_questions = this.questions.length;
           this.id = +qcm.id;
           this.classe = qcm.classe;
@@ -178,6 +186,24 @@ const app = new Vue({
           this.loaded = true;
           this.rendered = true;
         });
+    },
+    createQuestion: function(question) {
+      return {
+        num: +question.num || -1,
+        enonce: question.enonce || "",
+        is_single: !!question.is_single,
+        propositions: question.propositions.slice() || []
+      };
+    },
+    shuffleQuestions: function() {
+      const n = this.questions.length;
+      for (let i = n - 1; i >= n / 2; i--) {
+        const j = Math.floor(Math.random() * (n + 1) / 2);
+        const q1 = this.questions[i];
+        const q2 = this.questions[j];
+        this.questions[i] = q2;
+        this.questions[j] = q1;
+      }
     }
   }
 });
