@@ -23,7 +23,7 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark d-print-none">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#aside_navbar" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span> Menu
     </button>
@@ -58,7 +58,7 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
     }
     ?>
   </main>
-  <footer class="d-print-none bg-dark text-white p-2">
+  <footer class="d-print-none bg-dark text-white p-2 d-print-none">
     <div class="text-center">Page créée avec ♥ par Mohamed Anis MANI</div>
     <div class="text-center small">Année scolaire : 2021/2022</div>
   </footer>

@@ -34,7 +34,7 @@ CREATE TABLE `answers` (
   `date_rep` datetime NOT NULL,
   `ip_addr` varchar(128) NOT NULL,
   `reponse` varchar(2048) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -46,7 +46,7 @@ CREATE TABLE `eleves_classes` (
   `id` int NOT NULL,
   `classe` varchar(16) NOT NULL,
   `nom_prenom` varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `eleves_classes`
@@ -166,7 +166,7 @@ CREATE TABLE `qcms` (
   `nbr_questions` int NOT NULL,
   `questions` text NOT NULL,
   `reponses` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `qcms`

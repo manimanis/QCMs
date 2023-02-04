@@ -23,6 +23,7 @@
         <td>{{qcm.titre}}</td>
         <td>{{qcm.nbr_questions}}</td>
         <td>
+          <a href="#" title="Présvisualiser" v-on:click.prevent="onPreviewClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
           <a href="#" title="Editer" v-on:click.prevent="onEditClicked(idx)"><i class="fa-solid fa-pen-to-square"></i></a>
           <a href="#" title="Dupliquer" v-on:click.prevent="onDuplicateClicked(idx)"><i class="fa-solid fa-copy"></i></a>
           <a href="#" title="Supprimer" v-on:click.prevent="onDeleteClicked(idx)"><i class="fa-solid fa-trash-can"></i></a>
@@ -197,6 +198,62 @@
       <button class="btn btn-secondary" v-on:click="onCancelImport()"><i class="fa-solid fa-person-running"></i> Annuler</button>
     </div>
   </div>
+
+  <div class="my-2" v-if="mode == 'preview'">
+    <h2>Prévisulisation d'un QCM</h2>
+    <div class="my-2">
+      <label for="classe"><strong>Classe</strong></label>
+      <p>{{selectedQcm.classe}}</p>
+    </div>
+    <div class="my-2">
+      <label for="titre"><strong>Titre</strong></label>
+      <p>{{selectedQcm.titre}}</p>
+    </div>
+    <div class="my-2">
+      <label for="description"><strong>Description</strong></label>
+      <p v-html="selectedQcm.description"></p>
+    </div>
+    <div class="my-2 card" style="page-break-inside: avoid;" v-for="question, idx in selectedQcm.questions">
+      <div class="card-body">
+        <div>
+          <h4>Question {{idx+1}} / {{selectedQcm.questions.length}}</h4>
+        </div>
+        <div class="my-2">
+          <div v-html="question.enonce"></div>
+        </div>
+        <div class="my-2 card">
+          <div class="card-body">
+            <div v-for="proposition, idx2 in question.propositions">
+              <div class="row">
+                <div class="col-9">
+                  <label v-if="question.is_single">
+                    <input type="radio" v-bind:name="'prop'+idx" v-bind:value="String.fromCharCode(65+idx2)" v-model="question.single_answer" disabled>
+                    <span v-bind:id="'prop-'+idx+'-'+idx2" v-html="String.fromCharCode(65+idx2) + ' - ' + question.propositions[idx2]"></span>
+                  </label>
+                  <label v-if="!question.is_single">
+                    <input type="checkbox" v-bind:name="'prop'+idx+'_'+idx2" v-bind:value="String.fromCharCode(65+idx2)" v-model="question.answers" disabled>
+                    <span v-bind:id="'prop-'+idx+'-'+idx2" v-html="String.fromCharCode(65+idx2) + ' - ' + question.propositions[idx2]"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 mb-2 d-print-none">
+      <button class="btn btn-secondary" v-on:click="onCancelAjouter()"><i class="fa-solid fa-person-running"></i> Annuler</button>
+    </div>
+  </div>
 </div>
+<script src="resources/js/bootstrap.bundle.min.js"></script>
+<script src="resources/js/highlight.pack.js"></script>
+<script src="resources/js/hljs.algorithm.js"></script>
 <script src="resources/js/vue.min.js"></script>
 <script src="resources/apps/qcms.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    hljs.initHighlighting();
+  });
+</script>

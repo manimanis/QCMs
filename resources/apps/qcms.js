@@ -331,7 +331,7 @@ const app = new Vue({
                   this.qcms.push(qcmItem);
                 })
             );
-          }); 
+          });
           Promise.all(promiseArr).then(() => this.onCancelAjouter());
         }
       }
@@ -352,6 +352,13 @@ const app = new Vue({
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", `all-${this.selectedClasse}-qcm-${date}.json`);
       dlAnchorElem.click();
+    },
+    onPreviewClicked: function (idx) {
+      this.mode = 'preview';
+      this.selectedQcm = this.createNewQcm(this.qcms[idx]);
+      this.$nextTick(() => {
+        document.querySelectorAll(".card pre").forEach(pre => hljs.highlightBlock(pre));
+      });
     },
     verifyAndSanitizeQcm: function (qcm) {
       const fields = ["id", "classe", "titre", "description", "questions", "reponses", "nbr_questions"];
