@@ -53,8 +53,8 @@
                   <div class="proposition" v-for="proposition, idxprop in question.propositions">
                     <label class="d-flex">
                       <div><input v-bind:type="(question.is_single) ? 'radio' : 'checkbox'"
-                          v-bind:value="(question.num+1) + String.fromCharCode(idxprop + 65)" v-model="rep_array[idx]"></div>
-                      <div class="mx-2" v-html="proposition"></div>
+                          v-bind:value="(question.num+1) + String.fromCharCode(proposition.propNum + 65)" v-model="rep_array[idx]"></div>
+                      <div class="mx-2" v-html="proposition.proposition"></div>
                     </label>
                   </div>
                 </div>

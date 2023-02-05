@@ -204,6 +204,25 @@ const app = new Vue({
         this.questions[i] = q2;
         this.questions[j] = q1;
       }
+      for (let question of this.questions) {
+        this.shuffleProspositions(question);
+      }
+    },
+    shuffleProspositions: function (question) {
+      question.propositions = question.propositions.map((prop, idx) => {
+        return {
+          propNum: idx,
+          proposition: prop
+        };
+      });
+      const n = question.propositions.length;
+      for (let i = n - 1; i >= n / 2; i--) {
+        const j = Math.floor(Math.random() * (n + 1) / 2);
+        const q1 = question.propositions[i];
+        const q2 = question.propositions[j];
+        question.propositions[i] = q2;
+        question.propositions[j] = q1;
+      }
     }
   }
 });

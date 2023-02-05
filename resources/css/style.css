@@ -154,7 +154,8 @@ input:checked+.slider:before {
 
 /*** switch end ***/
 
-.language-algorithm::before, .language-python::before {
+.language-algorithm::before,
+.language-python::before {
   display: block;
   font-family: sans-serif;
   font-size: 0.7rem;
@@ -174,7 +175,7 @@ input:checked+.slider:before {
   content: "Python";
 }
 
-pre > code.shell.python.nohighlight {
+pre>code.shell.python.nohighlight {
   display: block;
   background-color: #333;
   color: #eee;
@@ -182,12 +183,12 @@ pre > code.shell.python.nohighlight {
 }
 
 .shell.python::before {
-	display: block;
-	content: attr(data-text);
-	font-weight: bold;
-	font-style: italic;
-	text-decoration: underline;
-	text-align: center;
+  display: block;
+  content: attr(data-text);
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+  text-align: center;
 }
 
 .bd-clipboard {
@@ -288,89 +289,128 @@ table.col-20 td {
 .list-group-item pre {
   margin: initial;
 }
+
 @media print {
-  body { 
+  body {
     font-size: 10pt;
   }
-  h1, h2, h3, h4 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     font-size: initial !important;
   }
+
   .row .col-sm-6 {
     width: 50%;
   }
+
   p {
     margin: initial;
   }
+
   .p-break {
     page-break-before: always;
   }
+
   aside {
     display: none !important;
   }
+
   .container {
     max-width: initial !important;
     width: initial !important;
   }
+
   figure {
     page-break-inside: avoid;
   }
+
   figure img.h2cm {
     max-height: 2cm !important;
   }
+
   figure img.h3cm {
     max-height: 3cm !important;
   }
+
   figure img.h4cm {
     max-height: 4cm !important;
   }
+
   figure img.h5cm {
     max-height: 5cm !important;
   }
+
   figure img.h6cm {
     max-height: 6cm !important;
   }
+
   figure img.h7cm {
     max-height: 7cm !important;
   }
+
   figure img.h8cm {
     max-height: 8cm !important;
   }
+
   figure img.h9cm {
     max-height: 9cm !important;
   }
+
   figure img.h10cm {
     max-height: 10cm !important;
   }
+
   figure img.h11cm {
     max-height: 11cm !important;
   }
+
   figure img.h12cm {
     max-height: 12cm !important;
   }
+
   figure img.h13cm {
     max-height: 13cm !important;
   }
+
   figure img.h14cm {
     max-height: 14cm !important;
   }
+
   figure img.h15cm {
     max-height: 15cm !important;
   }
+
   @page {
     counter-increment: page;
     counter-reset: page 1;
+
     @top-right {
       content: "Page " counter(page) " of " counter(pages);
     }
   }
-  table th, table td {
+
+  table th,
+  table td {
     border: thin solid #000;
   }
+
   .list-group-item {
     padding: initial;
     border: initial;
   }
+
   .list-group-item label.p-2 {
     padding: 0 0.5em !important;
+  }
+
+  .card {
+    border: none;
+  }
+
+  .card-body {
+    padding: 0;
   }
 }

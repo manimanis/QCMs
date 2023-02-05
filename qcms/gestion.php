@@ -202,12 +202,7 @@
   <div class="my-2" v-if="mode == 'preview'">
     <h2>Prévisulisation d'un QCM</h2>
     <div class="my-2">
-      <label for="classe"><strong>Classe</strong></label>
-      <p>{{selectedQcm.classe}}</p>
-    </div>
-    <div class="my-2">
-      <label for="titre"><strong>Titre</strong></label>
-      <p>{{selectedQcm.titre}}</p>
+      <h3>{{selectedQcm.classe}} - {{selectedQcm.titre}}</h3>
     </div>
     <div class="my-2">
       <label for="description"><strong>Description</strong></label>
