@@ -61,6 +61,14 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="my-2"><button type="button" class="btn btn-secondary" v-on:click="showStatisticsClicked()">{{showStatistics ? 'Cacher les statistiques' : 'Afficher les statistiques'}}</button></div>
+    <div class="my-2" v-if="showStatistics">
+      <div class="my-1" v-for="answer, idx in badAnswersCount">{{idx+1}} -
+        <strong>Question :</strong> {{answer.question}} -
+        <strong>Réponses fausses :</strong> {{answer.count}} / {{visibleAnswers.length}}
+      </div>
+    </div>
   </div>
 </div>
 <script src="resources/js/vue.min.js"></script>

@@ -11,12 +11,14 @@ const app_rep = new Vue({
     myCurClasse: -1,
     myCurQcm: -1,
     myCurDateDeb: -1,
-    myCurDateFin: -1
+    myCurDateFin: -1,
+    showStatistics: false,
+    badAnswersCount: []
   },
   computed: {
     curClasse: {
-      get: function() { return this.myCurClasse; },
-      set: function(value) {
+      get: function () { return this.myCurClasse; },
+      set: function (value) {
         this.myCurClasse = value;
         if (this.myCurClasse >= 0 && this.myCurClasse < this.classes.length) {
           this.fetchQcmsTitles(this.classes[this.myCurClasse]);
@@ -24,8 +26,8 @@ const app_rep = new Vue({
       }
     },
     curQcm: {
-      get: function() { return this.myCurQcm; },
-      set: function(value) {
+      get: function () { return this.myCurQcm; },
+      set: function (value) {
         this.myCurQcm = value;
         if (this.myCurQcm >= 0 && this.myCurQcm < this.qcmsTitles.length) {
           this.fetchAnswers(this.qcmsTitles[this.myCurQcm].id);
@@ -33,8 +35,8 @@ const app_rep = new Vue({
       }
     },
     curDateDeb: {
-      get: function() { return this.myCurDateDeb; },
-      set: function(value) {
+      get: function () { return this.myCurDateDeb; },
+      set: function (value) {
         this.myCurDateDeb = value;
         if (this.myCurDateDeb != -1) {
           if (this.myCurDateDeb > this.myCurDateFin) {
@@ -45,8 +47,8 @@ const app_rep = new Vue({
       }
     },
     curDateFin: {
-      get: function() { return this.myCurDateFin; },
-      set: function(value) {
+      get: function () { return this.myCurDateFin; },
+      set: function (value) {
         this.myCurDateFin = value;
         if (this.myCurDateFin != -1) {
           if (this.myCurDateDeb > this.myCurDateFin) {
@@ -57,12 +59,12 @@ const app_rep = new Vue({
       }
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.curClasse = -1;
     this.fetchClasses();
   },
   methods: {
-    fetchClasses: function() {
+    fetchClasses: function () {
       return fetch(`adminindex.php?op=classes`)
         .then(response => response.json())
         .then(data => {
@@ -75,7 +77,7 @@ const app_rep = new Vue({
           }
         });
     },
-    fetchQcmsTitles: function(classe) {
+    fetchQcmsTitles: function (classe) {
       return fetch(`adminindex.php?op=qcmsTitles&classe=${classe}`)
         .then(response => response.json())
         .then(data => {
@@ -87,7 +89,7 @@ const app_rep = new Vue({
           }
         });
     },
-    fetchAnswers: function(id) {
+    fetchAnswers: function (id) {
       return fetch(`adminindex.php?op=qcmsAnswers&id=${id}`)
         .then(response => response.json())
         .then(data => {
@@ -114,14 +116,14 @@ const app_rep = new Vue({
           }
         });
     },
-    filterAnswers: function() {
+    filterAnswers: function () {
       this.visibleAnswers = this.answers
         .filter(ans => {
           const dt = ans.date_rep.substr(0, 10);
           return dt >= this.dates[this.curDateDeb] && dt <= this.dates[this.curDateFin];
         })
     },
-    sortAnswers: function(column, add) {
+    sortAnswers: function (column, add) {
       add = !!add;
       let idx = this.sortColumns.findIndex(col => col.column == column);
       let col;
@@ -152,7 +154,7 @@ const app_rep = new Vue({
      * @param {string} answers 
      * @returns an array of reponses
      */
-    splitAnswers: function(answers) {
+    splitAnswers: function (answers) {
       const newAns = [];
       let i = 0,
         n = answers.length;
@@ -169,6 +171,19 @@ const app_rep = new Vue({
         newAns.push(ans);
       }
       return newAns;
+    },
+    showStatisticsClicked: function () {
+      this.showStatistics = !this.showStatistics;
+      this.badAnswersCount = this.qcm.reponses.map((_, idx) => { return { question: idx+1, count: 0 }; });
+      for (let answer of this.visibleAnswers) {
+        for (let i = 0; i < answer.is_correct.length; i++) {
+          this.badAnswersCount[i].count += !answer.is_correct[i];
+        }
+      }
+      this.badAnswersCount.sort((a, b) => {
+        if (a.count != b.count) return b.count - a.count;
+        return a.question - b.question;
+      });
     }
   }
 });
