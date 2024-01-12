@@ -23,14 +23,16 @@ if (!isset($_GET["qcm_id"])) {
 }
 
 $errors = [];
-try {
-    $dbh = new PDO("mysql:dbname={$base};host=$host", $user, $pass);
-} catch (PDOException $e) {
-    $errors[] = "Connexion impossible : " . $e->getMessage();
-}
+// try {
+//     $dbh = new PDO("mysql:dbname={$base};host=$host", $user, $pass);
+// } catch (PDOException $e) {
+//     $errors[] = "Connexion impossible : " . $e->getMessage();
+// }
 
 $qcm_id = intval($_GET['qcm_id']);
-$stmt = $dbh->prepare("SELECT id, classe, titre, `description`, questions FROM qcms WHERE id = :qcm_id");
+$stmt = $dbh->prepare("SELECT id, classe, titre, `description`, questions 
+FROM qcms 
+WHERE id = :qcm_id");
 $stmt->execute([':qcm_id' => $qcm_id]);
 $qcm = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$qcm) {
@@ -47,4 +49,4 @@ echo json_encode([
         'qcm' => $qcm,
         'eleves' => $eleves
     ]
-]);;
+]);
