@@ -16,7 +16,8 @@ const app = new Vue({
     error_message: "",
     is_sent: false,
     loaded: false,
-    rendered: false
+    rendered: false,
+    oneByOne: false
   },
   computed: {
     nbr_questions_vides: function () {
@@ -31,10 +32,14 @@ const app = new Vue({
   },
   updated: function () {
     if (this.rendered) {
-      const el = document.querySelector('#qcm .enonce pre > code.python');
-      if (el) {
-        hljs.highlightBlock(el);
-      }
+      // const els = document.querySelectorAll('#qcm .enonce pre:not(.rendered):has(code)'); // > code.python');
+      // for (el of els) {
+      //   if (!el.classList.contains("rendered")){
+      //     el.classList.add("rendered");
+      //     hljs.highlightBlock(el);
+      //   }
+      // }
+      hljs.initHighlighting();
       this.rendered = false;
     }
   },
@@ -187,7 +192,7 @@ const app = new Vue({
           this.rendered = true;
         });
     },
-    createQuestion: function(question) {
+    createQuestion: function (question) {
       return {
         num: +question.num || -1,
         enonce: question.enonce || "",
@@ -195,7 +200,7 @@ const app = new Vue({
         propositions: question.propositions.slice() || []
       };
     },
-    shuffleQuestions: function() {
+    shuffleQuestions: function () {
       const n = this.questions.length;
       for (let i = n - 1; i >= n / 2; i--) {
         const j = Math.floor(Math.random() * (n + 1) / 2);

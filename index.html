@@ -28,7 +28,7 @@
           <input type="number" min="0" max="999" v-model="id" v-on:keyup.enter="loadQcm()">
           <button class="btn btn-success" v-on:click="loadQcm()">Ouvrir...</button>
         </div>
-        <div v-if="loaded">
+        <div v-if="loaded && oneByOne">
           <h2>QCM n°{{id}} - {{titre}} [{{classe}}]</h2>
 
           <div class="mt-2 mb-4" v-html="description"></div>
@@ -53,7 +53,8 @@
                   <div class="proposition" v-for="proposition, idxprop in question.propositions">
                     <label class="d-flex">
                       <div><input v-bind:type="(question.is_single) ? 'radio' : 'checkbox'"
-                          v-bind:value="(question.num+1) + String.fromCharCode(proposition.propNum + 65)" v-model="rep_array[idx]"></div>
+                          v-bind:value="(question.num+1) + String.fromCharCode(proposition.propNum + 65)"
+                          v-model="rep_array[idx]"></div>
                       <div class="mx-2" v-html="proposition.proposition"></div>
                     </label>
                   </div>
@@ -78,6 +79,57 @@
               <input type="button" value="Suivant" class="btn btn-primary" style="width: 130px;"
                 v-bind:disabled="num_question == nbr_questions - 1" v-on:click="nextQuestion()">
             </div>
+          </div>
+        </div>
+
+        <div v-if="loaded && !oneByOne">
+          <h2>QCM n°{{id}} - {{titre}} [{{classe}}]</h2>
+
+          <div class="mt-2 mb-4" v-html="description"></div>
+
+          <div class="mt-2 mb-4">
+            <label for="nom_prenom">Nom & Prénom</label>
+            <input id="nom_prenom" type="text" class="form-control" list="liste-eleves" placeholder="Nom & Prénom"
+              v-model="nom_prenom">
+            <div v-if="nom_prenom.length == 0" class="fst-italic text-danger"><small>Vous devez indiquer votre nom &
+                prénom pour pouvoir soumettre vos réponses.</small></div>
+            <datalist id="liste-eleves">
+              <option v-for="eleve in eleves" v-bind:value="eleve.nom_prenom"></option>
+            </datalist>
+          </div>
+
+          <div class="sticky-top bg-white text-dark">
+            <small class="fst-italic fw-bold">Vous avez répondu à {{nbr_questions - nbr_questions_vides}} question(s)
+              parmi
+              {{nbr_questions}}.</small>
+            <progress v-bind:value="nbr_questions - nbr_questions_vides" v-bind:max="nbr_questions"
+              style="width: 200px;" class="mx-2"></progress>
+            <div v-if="nbr_questions_vides > 0" class="text-center fst-italic text-danger"><small>Répondre à toutes les
+                questions.</small></div>
+          </div>
+
+          <div class="card my-2" v-for="question, idx in questions">
+            <div class="card-body">
+              <h3 class="card-title">Question n°{{idx+1}} / {{nbr_questions}}</h3>
+              <div class="question">
+                <div class="enonce" v-html="question.enonce"></div>
+                <div class="propositions">
+                  <div class="proposition" v-for="proposition, idxprop in question.propositions">
+                    <label class="d-flex">
+                      <div><input v-bind:type="(question.is_single) ? 'radio' : 'checkbox'"
+                          v-bind:value="(question.num+1) + String.fromCharCode(proposition.propNum + 65)"
+                          v-model="rep_array[idx]"></div>
+                      <div class="mx-2" v-html="proposition.proposition"></div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <input type="button" value="Soumettre" class="btn btn-primary" style="width: 130px;"
+              v-bind:disabled="nbr_questions_vides > 0" v-on:click="submitAnswers()">
           </div>
         </div>
 
