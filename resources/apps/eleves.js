@@ -8,12 +8,14 @@ const app = new Vue({
     selectedEleve: {},
     selectedEleveIdx: -1,
     selectedClasse: "",
-    selectedEleves: ""
+    selectedEleves: "",
+    multipleEleves: false,
+    listeNomsEleves: ""
   },
   computed: {
     curClasse: {
-      get: function() { return this.myCurClasse; },
-      set: function(value) {
+      get: function () { return this.myCurClasse; },
+      set: function (value) {
         this.myCurClasse = +value;
         if (this.myCurClasse >= 0 && this.myCurClasse < this.classes.length) {
           this.fetchEleves(this.classes[this.myCurClasse]);
@@ -27,11 +29,11 @@ const app = new Vue({
       return "";
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.fetchClasses();
   },
   methods: {
-    fetchClasses: function() {
+    fetchClasses: function () {
       return fetch(`adminindex.php?op=classes`)
         .then(response => response.json())
         .then(data => {
@@ -40,7 +42,7 @@ const app = new Vue({
           }
         });
     },
-    fetchEleves: function(classe) {
+    fetchEleves: function (classe) {
       return fetch(`adminindex.php?op=eleves&classe=${classe}`)
         .then(response => response.json())
         .then(data => {
@@ -49,16 +51,16 @@ const app = new Vue({
           }
         });
     },
-    postEleve: function(eleveObj, op) {
+    postEleve: function (eleveObj, op) {
       const data = new FormData();
       data.append("id", eleveObj.id);
       data.append("classe", eleveObj.classe);
       data.append("nom_prenom", eleveObj.nom_prenom);
       data.append("op", op);
       return fetch(`adminindex.php`, {
-          method: 'post',
-          body: data,
-        })
+        method: 'post',
+        body: data,
+      })
         .then(response => response.json())
         .then(data => {
           if (data['isok']) {
@@ -70,14 +72,14 @@ const app = new Vue({
           return null;
         });
     },
-    removeEleve: function(eleveObj) {
+    removeEleve: function (eleveObj) {
       const data = new FormData();
       data.append("id", eleveObj.id);
       data.append("op", "deleteEleve");
       return fetch(`adminindex.php`, {
-          method: 'post',
-          body: data,
-        })
+        method: 'post',
+        body: data,
+      })
         .then(response => response.json())
         .then(data => {
           if (data['isok']) {
@@ -86,15 +88,15 @@ const app = new Vue({
           return -1;
         });
     },
-    insertClasse: function(classe, eleves) {
+    insertClasse: function (classe, eleves) {
       const data = new FormData();
       data.append("classe", classe);
       data.append("eleves", eleves);
       data.append("op", "insertClasse");
       return fetch(`adminindex.php`, {
-          method: 'post',
-          body: data,
-        })
+        method: 'post',
+        body: data,
+      })
         .then(response => response.json())
         .then(data => {
           if (data['isok']) {
@@ -112,47 +114,67 @@ const app = new Vue({
           return [];
         });
     },
-    createNewEleve: function(eleve) {
+    createNewEleve: function (eleve) {
       return {
         id: +eleve.id || -1,
         classe: eleve.classe || "",
         nom_prenom: eleve.nom_prenom || ""
       };
     },
-    onEditEleve: function(idxEleve) {
+    onEditEleve: function (idxEleve) {
       this.selectedEleve = this.createNewEleve(this.eleves[idxEleve]);
       this.selectedEleveIdx = idxEleve;
       this.mode = "editEleve";
     },
-    onApplyEdit: function() {
+    onApplyEdit: function () {
       this.postEleve(this.selectedEleve, "updateEleve")
         .then(eleObj => {
           this.eleves[this.selectedEleveIdx] = eleObj;
           this.onCancelEdit()
         });
     },
-    onCancelEdit: function() {
+    onCancelEdit: function () {
       this.mode = 'liste';
     },
-    onNewEleve: function() {
+    onNewEleve: function () {
       this.selectedEleve = this.createNewEleve({
         classe: this.currentSelectedClass
       });
+      this.listeNomsEleves = "";
       this.mode = "newEleve";
     },
-    onApplyInsert: function() {
-      this.postEleve(this.selectedEleve, "insertEleve")
-        .then(eleObj => {
-          this.eleves.push(eleObj);
+    onApplyInsert: function () {
+      if (!this.multipleEleves) {
+        // Ajouter un seul élève
+        this.postEleve(this.selectedEleve, "insertEleve")
+          .then(eleObj => {
+            this.eleves.push(eleObj);
+            this.onCancelEdit()
+          });
+      } else {
+        const eleves = this.listeNomsEleves.split("\n");
+        Promise.all(
+          eleves.map(nomEleve => {
+            const newEleve = this.createNewEleve({
+              classe: this.currentSelectedClass,
+              nom_prenom: nomEleve.trim()
+            });
+            return this.postEleve(newEleve, "insertEleve");
+          })
+        ).then(obj => {
+          if (Array.isArray(obj)) {
+            obj.forEach(eleve => this.eleves.push(eleve));
+          }
           this.onCancelEdit()
         });
+      }
     },
-    onDeleteEleve: function(idxEleve) {
+    onDeleteEleve: function (idxEleve) {
       this.selectedEleve = this.eleves[idxEleve];
       this.selectedEleveIdx = idxEleve;
       this.mode = "deleteEleve";
     },
-    onApplyDelete: function() {
+    onApplyDelete: function () {
       if (!confirm("Ceci est un dernier avertissement. Voulez-vous supprimer définitivement cet élève ?")) {
         return;
       }
@@ -162,19 +184,19 @@ const app = new Vue({
           this.onCancelEdit()
         });
     },
-    onNewClasse: function() {
+    onNewClasse: function () {
       this.selectedClasse = this.currentSelectedClass;
       this.selectedEleves = "";
       this.mode = 'newClasse';
     },
-    onApplyInsertClasse: function() {
+    onApplyInsertClasse: function () {
       this.insertClasse(this.selectedClasse, this.selectedEleves)
         .then(elevesArr => {
           elevesArr.forEach(eleve => this.eleves.push(eleve));
           this.onCancelInsertClasse();
         });
     },
-    onCancelInsertClasse: function() {
+    onCancelInsertClasse: function () {
       this.mode = 'liste';
     }
   }

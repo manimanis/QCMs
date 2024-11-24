@@ -17,7 +17,7 @@ const app = new Vue({
     is_sent: false,
     loaded: false,
     rendered: false,
-    oneByOne: false
+    oneByOne: true
   },
   computed: {
     nbr_questions_vides: function () {
@@ -31,16 +31,9 @@ const app = new Vue({
     }
   },
   updated: function () {
-    if (this.rendered) {
-      // const els = document.querySelectorAll('#qcm .enonce pre:not(.rendered):has(code)'); // > code.python');
-      // for (el of els) {
-      //   if (!el.classList.contains("rendered")){
-      //     el.classList.add("rendered");
-      //     hljs.highlightBlock(el);
-      //   }
-      // }
-      hljs.initHighlighting();
-      this.rendered = false;
+    const els = document.querySelectorAll('#qcm .enonce pre:not(.hljs) > code');
+    for (el of els) {
+      hljs.highlightBlock(el);
     }
   },
   mounted: function () {

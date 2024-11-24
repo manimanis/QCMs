@@ -46,13 +46,16 @@
 
   <div class="my-2" v-if="mode == 'newEleve' || mode == 'editEleve'">
     <!-- <form action="?op=update_eleve" method="post"> -->
+    <label v-if="mode == 'newEleve'"><input type="checkbox" v-model="multipleEleves">
+      {{multipleEleves ? "Plusieurs élèves" : "Elève par élève"}}</label>
     <div class="my-2">
       <label for="classe">Classe</label>
       <input type="text" name="classe" id="classe" class="form-control" placeholder="classe" v-model="selectedEleve.classe">
     </div>
     <div class="my-2">
       <label for="nom_prenom">Nom &amp; prénom</label>
-      <input type="text" name="nom_prenom" id="nom_prenom" class="form-control" placeholder="Nom de l'élève" v-model="selectedEleve.nom_prenom">
+      <input type="text" name="nom_prenom" id="nom_prenom" class="form-control" placeholder="Nom de l'élève" v-if="!multipleEleves" v-model="selectedEleve.nom_prenom">
+      <textarea rows="10" class="form-control" placeholder="Noms des élèves" v-if="multipleEleves" v-model="listeNomsEleves"></textarea>
     </div>
     <div class="my-2">
       <button class="btn btn-primary" v-if="mode == 'editEleve'" v-on:click="onApplyEdit()">Mettre à jour</button>
