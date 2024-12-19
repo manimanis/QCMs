@@ -2,9 +2,12 @@ const app_rep = new Vue({
   el: '#liste-qcm',
   data: {
     params: {},
+    nom_prenom: "",
     correctAnswers: [],
     studentAnswers: [],
-    qcm: {}
+    qcm: {},
+    isCorrect: [],
+    note: 0
   },
   mounted: function () {
     this.readParams();
@@ -27,6 +30,7 @@ const app_rep = new Vue({
           if (data['isok']) {
             console.log(data);
             this.qcm = data.qcm;
+            this.nom_prenom = data.answer.nom_prenom;
             this.qcm.questions = JSON.parse(this.qcm.questions);
 
             const correctAnswers = this.splitAnswers(data.qcm.reponses);
@@ -44,6 +48,8 @@ const app_rep = new Vue({
                 question.studentAnswers = question.studentAnswers[0];
               }
             });
+            this.isCorrect = this.qcm.questions.map(question => this.isCorrectAnswer(question));
+            this.note = this.isCorrect.reduce((note, iscorrect) => note += iscorrect, 0);
           }
         });
     },

@@ -1,6 +1,6 @@
 <div id="liste-qcm">
   <div class="my-2">
-    <h2>Réponse élève</h2>
+    <h2>Réponse élève <b>{{nom_prenom}}</b></h2>
     <div class="my-2">
       <h3>{{qcm.classe}} - {{qcm.titre}}</h3>
     </div>
@@ -8,10 +8,16 @@
       <label for="description"><strong>Description</strong></label>
       <p v-html="qcm.description"></p>
     </div>
+    <div class="my-2">
+      <label for="note"><strong>Note</strong></label>
+      <p>{{note}} / {{qcm.questions.length}}</p>
+    </div>
     <div class="my-2 card" style="page-break-inside: avoid;" v-for="question, idx in qcm.questions">
       <div class="card-body">
         <div>
-          <h4>Question {{idx+1}} / {{qcm.questions.length}} <span class="badge" v-bind:class="{'bg-success': isCorrectAnswer(question), 'bg-danger': !isCorrectAnswer(question)}">{{isCorrectAnswer(question) ? "Correct" : "Incorrect"}}</span></h4>
+          <h4>Question {{idx+1}} / {{qcm.questions.length}}
+            <span class="badge" v-bind:class="{'bg-success': isCorrect[idx], 'bg-danger': !isCorrect[idx]}">{{isCorrect[idx] ? "Correct" : "Incorrect"}}</span>
+          </h4>
         </div>
         <div class="my-2">
           <div v-html="question.enonce"></div>

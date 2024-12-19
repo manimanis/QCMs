@@ -43,6 +43,7 @@
           <th width="80" v-on:click="sortAnswers('ip_addr')">Adr. IP</th>
           <th v-on:click="sortAnswers('reponse')">Réponse</th>
           <th width="140" v-on:click="sortAnswers('mark')">Note</th>
+          <th>&nbsp;</th>
         </tr>
         <tr v-for="ans, idx in visibleAnswers">
           <td class="text-center"><small>#{{ans.index}}</small></td>
@@ -51,10 +52,17 @@
           <td class="text-center"><small>{{ans.ip_addr}}</small></td>
           <td>
             <small>
-              <span v-for="rep, idx in ans.reponse"><span class="text-success" v-if="ans.is_correct[idx]">{{rep}}</span><span class="text-danger" v-if="!ans.is_correct[idx]" v-if="!ans.is_correct[idx]"><del>{{rep}}</del></span>/</span>
+              <span v-for="rep, idx in ans.reponse">
+                <span class="text-success" v-if="ans.is_correct[idx]">{{rep}}</span>
+                <span class="text-danger" v-if="!ans.is_correct[idx]" v-if="!ans.is_correct[idx]">
+                <del>{{rep}}</del> 
+                </span>/</span> 
             </small>
           </td>
-          <td><small>{{ans.good_answers}}-{{ans.bad_answers}}={{ans.mark}}</small></td>
+          <td>
+            {{ans.nbrCorrectAnswers}} / {{qcm.nbr_questions}} <br>
+            <small>{{ans.good_answers}}-{{ans.bad_answers}}={{ans.mark}}</small>
+          </td>
           <td><a v-bind:href="'admin.php?op=reponse_eleve&ans_id=' + ans.id" target="_blank" rel="noopener noreferrer">Réponses</a></td>
         </tr>
         <tr v-if="answers.length == 0">

@@ -95,16 +95,39 @@ const app_rep = new Vue({
         .then(data => {
           if (data['isok']) {
             this.qcm = data['qcm'];
+            const correctAnswers = this.splitAnswersAsObject(this.qcm.reponses);
             this.qcm.reponses = this.splitAnswers(this.qcm.reponses);
+            this.qcm.correctAnswers = Array(this.qcm.nbr_questions).fill(null)
+              .map((_, idx) => {
+                const numQuestion = String(idx + 1);
+                return correctAnswers
+                  .filter((answer) => answer.numQ == numQuestion)
+                  .map((answer) => answer.ansQ);
+              });
 
             this.answers = data['qcmsAnswers'];
             this.answers.forEach((ans, idx) => {
               ans.index = idx + 1;
+              const studentAnswers = this.splitAnswersAsObject(ans.reponse);
+              ans.studentAnswers = Array(this.qcm.nbr_questions).fill(null)
+                .map((_, idx) => {
+                  const numQuestion = String(idx + 1);
+                  return studentAnswers
+                    .filter((answer) => answer.numQ == numQuestion)
+                    .map((answer) => answer.ansQ);
+                });
+              // console.log(ans.studentAnswers);
               ans.reponse = this.splitAnswers(ans.reponse);
               ans.is_correct = ans.reponse.map(rep => this.qcm.reponses.includes(rep));
               ans.good_answers = ans.is_correct.reduce((pv, cv) => pv + +cv, 0);
               ans.bad_answers = ans.is_correct.reduce((pv, cv) => pv + +!cv, 0);
               ans.mark = ans.good_answers - ans.bad_answers;
+
+              ans.correctAnswers = Array(this.qcm.nbr_questions).fill(null)
+                .map((_, idx) => {
+                  return this.isCorrectAnswer(this.qcm.correctAnswers[idx], ans.studentAnswers[idx]);
+                });
+              ans.nbrCorrectAnswers = ans.correctAnswers.reduce((note, iscorrect) => note + iscorrect, 0);
             });
 
             this.dates = this.answers.map(answer => answer.date_rep.substr(0, 10));
@@ -174,7 +197,7 @@ const app_rep = new Vue({
     },
     showStatisticsClicked: function () {
       this.showStatistics = !this.showStatistics;
-      this.badAnswersCount = this.qcm.reponses.map((_, idx) => { return { question: idx+1, count: 0 }; });
+      this.badAnswersCount = this.qcm.reponses.map((_, idx) => { return { question: idx + 1, count: 0 }; });
       for (let answer of this.visibleAnswers) {
         for (let i = 0; i < answer.is_correct.length; i++) {
           this.badAnswersCount[i].count += !answer.is_correct[i];
@@ -184,6 +207,31 @@ const app_rep = new Vue({
         if (a.count != b.count) return b.count - a.count;
         return a.question - b.question;
       });
+    },
+    splitAnswersAsObject: function (answers) {
+      const newAns = [];
+      let i = 0,
+        n = answers.length;
+      while (i < n) {
+        let numQ = "", ansQ = "";
+        while (i < n && answers[i] >= "0" && answers[i] <= "9") {
+          numQ += answers[i];
+          i++;
+        }
+        while (i < n && answers[i] >= "A" && answers[i] <= "Z") {
+          ansQ += answers[i];
+          i++;
+        }
+        newAns.push({ numQ: numQ, ansQ: ansQ });
+      }
+      return newAns;
+    },
+    isCorrectAnswer: function (correctAnswers, studentAnswers) {
+      let goodAnswers = 0;
+      studentAnswers.forEach(sa => {
+        goodAnswers += correctAnswers.includes(sa);
+      });
+      return goodAnswers == correctAnswers.length;
     }
   }
 });
