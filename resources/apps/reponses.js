@@ -100,9 +100,11 @@ const app_rep = new Vue({
             this.qcm.correctAnswers = Array(this.qcm.nbr_questions).fill(null)
               .map((_, idx) => {
                 const numQuestion = String(idx + 1);
-                return correctAnswers
+                const answers = correctAnswers
                   .filter((answer) => answer.numQ == numQuestion)
                   .map((answer) => answer.ansQ);
+                answers.sort();
+                return answers;
               });
 
             this.answers = data['qcmsAnswers'];
@@ -112,9 +114,11 @@ const app_rep = new Vue({
               ans.studentAnswers = Array(this.qcm.nbr_questions).fill(null)
                 .map((_, idx) => {
                   const numQuestion = String(idx + 1);
-                  return studentAnswers
+                  const answers = studentAnswers
                     .filter((answer) => answer.numQ == numQuestion)
                     .map((answer) => answer.ansQ);
+                  answers.sort();
+                  return answers;
                 });
               // console.log(ans.studentAnswers);
               ans.reponse = this.splitAnswers(ans.reponse);

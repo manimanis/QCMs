@@ -32,7 +32,11 @@
     <p><strong>Description :</strong> {{qcm.description}}</p>
     <p><strong>Classe :</strong> {{classes[curClasse]}}</p>
     <p v-if="dates.length > 0"><strong>Date :</strong> {{dates[curDateDeb]}} &rarr; {{dates[curDateFin]}}</p>
-    <p><strong>Réponses :</strong> <span v-for="ans in qcm.reponses">{{ans}}/</span></p>
+    <p><strong>Réponses :</strong>
+      <span v-for="ans, idx in qcm.correctAnswers">{{idx+1}}
+        <b v-for="letter in ans">{{letter}}</b>/</span>
+    </p>
+    <!--<p><strong>Réponses :</strong> <span v-for="ans in qcm.reponses">{{ans}}/</span></p>-->
 
     <table class="my-2 table table-sm table-bordered table-striped border-dark align-middle">
       <tbody>
@@ -51,12 +55,22 @@
           <td class="text-center"><small>{{ans.date_rep}}</small></td>
           <td class="text-center"><small>{{ans.ip_addr}}</small></td>
           <td>
+            <!--
             <small>
               <span v-for="rep, idx in ans.reponse">
                 <span class="text-success" v-if="ans.is_correct[idx]">{{rep}}</span>
                 <span class="text-danger" v-if="!ans.is_correct[idx]" v-if="!ans.is_correct[idx]">
                 <del>{{rep}}</del> 
-                </span>/</span> 
+                </span> / </span> 
+            </small>
+            -->
+            <small>
+              <span v-for="rep, idx in ans.studentAnswers">
+                {{idx+1}}
+                <span class="text-danger" v-if="!ans.is_correct[idx]" v-if="!ans.is_correct[idx]">
+                  <del>{{rep.join("")}}</del>
+                </span> <span class="text-success">{{qcm.correctAnswers[idx].join("")}}</span>
+                 / </span>
             </small>
           </td>
           <td>

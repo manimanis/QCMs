@@ -39,7 +39,7 @@ if (!$qcm) {
     $qcm = $default_response;
 }
 
-$stmt = $dbh->prepare("SELECT * FROM eleves_classes WHERE classe = :classe");
+$stmt = $dbh->prepare("SELECT * FROM eleves_classes WHERE classe = :classe ORDER BY nom_prenom");
 $stmt->execute([':classe' => $qcm['classe']]);
 $eleves = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

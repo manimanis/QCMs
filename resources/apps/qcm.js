@@ -11,7 +11,9 @@ const app = new Vue({
     _nbr_questions_vides: 0,
     rep_array: [],
     eleves: [],
+    nbre_eleves: 1,
     nom_prenom: "", // "Mohamed Anis MANI",
+    nom_prenom1: "",
     errors: [],
     error_message: "",
     is_sent: false,
@@ -81,9 +83,14 @@ const app = new Vue({
         return;
       }
 
+      let noms_eleves = this.nom_prenom;
+      if (this.nbre_eleves) {
+        noms_eleves += " - " + this.nom_prenom1;
+      }
+
       const data = new FormData();
       data.append("qcm_id", this.id);
-      data.append("nom_prenom", this.nom_prenom);
+      data.append("nom_prenom", noms_eleves);
       data.append("questions_count", this.rep_array.length);
       this.rep_array.forEach((rep, idx) => {
         const question = this.questions[idx];
@@ -95,7 +102,7 @@ const app = new Vue({
       });
       const qcm = {
         qcm_id: this.id,
-        nom_prenom: this.nom_prenom,
+        nom_prenom: noms_eleves,
         questions_count: this.rep_array.length,
         rep_array: this.rep_array
       };

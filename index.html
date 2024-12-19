@@ -30,10 +30,25 @@
         </div>
         <div v-if="loaded">
           <div class="mt-2 mb-4">
-            <label for="nom_prenom">Nom & Prénom</label>
-            <input id="nom_prenom" type="text" class="form-control" list="liste-eleves" placeholder="Nom & Prénom"
-              v-model="nom_prenom">
-            <div v-if="nom_prenom.length == 0" class="fst-italic text-danger"><small>Vous devez indiquer votre nom &
+            <div>Nombre d'élèves
+              <label><input type="radio" v-model="nbre_eleves" value="1"> Un élève</label>
+              <label><input type="radio" v-model="nbre_eleves" value="2"> Deux élèves</label>
+            </div>
+            <div class="row">
+              <div class="col-6 my-2">
+                <label for="nom_prenom">Nom & Prénom{{nbre_eleves > 1 ? " (1e élève)" : ""}}</label>
+                <input id="nom_prenom" type="text" class="form-control" list="liste-eleves" placeholder="Nom & Prénom"
+                  v-model="nom_prenom">
+              </div>
+              <div class="col-6 my-2" v-if="nbre_eleves == 2">
+                <label for="nom_prenom1">Nom & Prénom (2e élève)</label>
+                <input id="nom_prenom1" type="text" class="form-control" list="liste-eleves"
+                  placeholder="Nom & Prénom 2ème élève" v-model="nom_prenom1">
+              </div>
+            </div>
+            <div
+              v-if="nom_prenom.length == 0 || (nbre_eleves && (nom_prenom1.length == 0 || nom_prenom == nom_prenom1))"
+              class="fst-italic text-danger"><small>Vous devez indiquer votre nom &
                 prénom pour pouvoir soumettre vos réponses.</small></div>
             <datalist id="liste-eleves">
               <option v-for="eleve in eleves" v-bind:value="eleve.nom_prenom"></option>
