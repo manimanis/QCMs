@@ -23,6 +23,10 @@ if ($op == 'classes') {
 } else if ($op == 'qcms') {
   $qcms = listQcmsAndContent($dbh, $_GET['classe']);
   echo json_encode(["isok" => true, "qcms" => $qcms]);
+} else if ($op == 'single_qcm') {
+  $answer = getAnswerById($dbh, $_GET["ans_id"]);
+  $qcm = getQcmById($dbh, $answer['qcm_id']);
+  echo json_encode(["isok" => true, "qcm" => $qcm, "answer" => $answer]);
 } else if ($op == 'qcmsTitles') {
   $qcms = listQcmsTitles($dbh, $_GET['classe']);
   echo json_encode(["isok" => true, "qcmsTitles" => $qcms]);

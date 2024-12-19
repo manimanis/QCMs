@@ -31,6 +31,13 @@ function getQcmById(PDO $dbh, int $id)
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+function getAnswerById(PDO $dbh, int $ans_id) {
+    $stmt = $dbh->prepare("SELECT * 
+                           FROM answers WHERE id = :id;");
+    $stmt->execute([':id' => $ans_id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 function listDatesQcm(PDO $dbh, int $qcm_id)
 {
     $stmt = $dbh->prepare("SELECT distinct DATE(date_rep) as date_rep 

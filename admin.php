@@ -55,6 +55,8 @@ if ($_SERVER['REMOTE_ADDR'] != "127.0.0.1") {
       require_once './eleves/eleves.php';
     } else if ($op == "gestion_qcms") {
       require_once './qcms/gestion.php';
+    } else if ($op == "reponse_eleve") {
+      require_once './qcms/reponse_eleve.php';
     }
     ?>
   </main>

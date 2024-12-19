@@ -55,6 +55,7 @@
             </small>
           </td>
           <td><small>{{ans.good_answers}}-{{ans.bad_answers}}={{ans.mark}}</small></td>
+          <td><a v-bind:href="'admin.php?op=reponse_eleve&ans_id=' + ans.id" target="_blank" rel="noopener noreferrer">Réponses</a></td>
         </tr>
         <tr v-if="answers.length == 0">
           <td colspan="6">Aucune réponse à afficher.</td>
