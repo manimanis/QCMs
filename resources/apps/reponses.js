@@ -201,9 +201,11 @@ const app_rep = new Vue({
     },
     showStatisticsClicked: function () {
       this.showStatistics = !this.showStatistics;
-      this.badAnswersCount = this.qcm.reponses.map((_, idx) => { return { question: idx + 1, count: 0 }; });
+      // this.badAnswersCount = this.qcm.reponses.map((_, idx) => { return { question: idx + 1, count: 0 }; });
+      this.badAnswersCount = Array(this.qcm.nbr_questions).fill(null)
+        .map((_, idx) => { return { question: idx + 1, count: 0 } });
       for (let answer of this.visibleAnswers) {
-        for (let i = 0; i < answer.is_correct.length; i++) {
+        for (let i = 0; i < answer.correctAnswers.length; i++) {
           this.badAnswersCount[i].count += !answer.is_correct[i];
         }
       }
